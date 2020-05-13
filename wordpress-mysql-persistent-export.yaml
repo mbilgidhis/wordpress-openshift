@@ -1,0 +1,565 @@
+apiVersion: v1
+kind: Template
+metadata:
+  creationTimestamp: null
+  name: wordpress-mysql
+objects:
+- apiVersion: v1
+  kind: ImageStream
+  metadata:
+    annotations:
+      description: Application ImageStream for Wordpress using PHP 5.6
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress
+  spec:
+    lookupPolicy:
+      local: false
+    tags:
+    - annotations: null
+      from:
+        kind: DockerImage
+        name: docker-registry.default.svc:5000/mbilgidhis/wordpress:latest
+      generation: null
+      importPolicy: {}
+      name: latest
+      referencePolicy:
+        type: ""
+  status:
+    dockerImageRepository: ""
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      description: DeploymentConfig for Wordpress application
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress
+  spec:
+    replicas: 1
+    selector:
+      name: wordpress
+    strategy:
+      activeDeadlineSeconds: 21600
+      resources: {}
+      rollingParams:
+        intervalSeconds: 1
+        maxSurge: 25%
+        maxUnavailable: 25%
+        timeoutSeconds: 600
+        updatePeriodSeconds: 1
+      type: Rolling
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: wordpress
+        name: wordpress
+      spec:
+        containers:
+        - env:
+          - name: WORDPRESS_DB_HOST
+            value: wordpress-mysql
+          - name: WORDPRESS_DB_NAME
+            value: wordpress
+          - name: WORDPRESS_DB_USER
+            value: wordpress
+          - name: WORDPRESS_DB_PASSWORD
+            value: a8O2Qc65FBfJN3iD
+          image: docker-registry.default.svc:5000/mbilgidhis/wordpress@sha256:7638141119e3d40d155e72e4c1b7d8a5d8157bb89ad32f8117aa49b033c87cea
+          imagePullPolicy: IfNotPresent
+          name: wordpress
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /opt/app-root/src/pv-uploads
+            name: wordpress-uploads-folder
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: wordpress-uploads-folder
+          persistentVolumeClaim:
+            claimName: wordpress-uploads-folder
+    test: false
+    triggers:
+    - imageChangeParams:
+        automatic: true
+        containerNames:
+        - wordpress
+        from:
+          kind: ImageStreamTag
+          name: wordpress:latest
+          namespace: mbilgidhis
+      type: ImageChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: DeploymentConfig
+  metadata:
+    annotations:
+      description: Deployment config for MySQL
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress-mysql
+  spec:
+    replicas: 1
+    selector:
+      name: wordpress-mysql
+    strategy:
+      activeDeadlineSeconds: 21600
+      recreateParams:
+        timeoutSeconds: 600
+      resources: {}
+      type: Recreate
+    template:
+      metadata:
+        creationTimestamp: null
+        labels:
+          name: wordpress-mysql
+        name: wordpress-mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            value: wordpress
+          - name: MYSQL_PASSWORD
+            value: a8O2Qc65FBfJN3iD
+          - name: MYSQL_DATABASE
+            value: wordpress
+          image: rhscl/mysql-56-rhel7
+          imagePullPolicy: Always
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql/data
+            name: wordpress-mysql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: wordpress-mysql-data
+          persistentVolumeClaim:
+            claimName: wordpress-mysql
+    test: false
+    triggers:
+    - type: ConfigChange
+  status:
+    availableReplicas: 0
+    latestVersion: 0
+    observedGeneration: 0
+    replicas: 0
+    unavailableReplicas: 0
+    updatedReplicas: 0
+- apiVersion: v1
+  kind: BuildConfig
+  metadata:
+    annotations:
+      description: BuildConfig for Wordpress application image
+    creationTimestamp: null
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress
+  spec:
+    nodeSelector: null
+    output:
+      to:
+        kind: ImageStreamTag
+        name: wordpress:latest
+    postCommit: {}
+    resources: {}
+    runPolicy: Serial
+    source:
+      contextDir: wordpress
+      git:
+        ref: master
+        uri: https://github.com/mbilgidhis/wordpress-openshift.git
+      type: Git
+    strategy:
+      sourceStrategy:
+        from:
+          kind: ImageStreamTag
+          name: php:5.6
+          namespace: openshift
+      type: Source
+    triggers:
+    - imageChange: {}
+      type: ImageChange
+    - type: ConfigChange
+    - github:
+        secret: 58E2g5WPOjXFAWFDLQX5fos6WAwJihEjQtrnRtMX
+      type: GitHub
+  status:
+    lastVersion: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2020-05-13 06:35:19 -0400 EDT
+      openshift.io/deployer-pod.created-at: 2020-05-13 06:35:07 -0400 EDT
+      openshift.io/deployer-pod.name: wordpress-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: wordpress
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"wordpress","namespace":"mbilgidhis","selfLink":"/apis/apps.openshift.io/v1/namespaces/mbilgidhis/deploymentconfigs/wordpress","uid":"58b20562-9505-11ea-b05f-5254006b484b","resourceVersion":"1863066","generation":2,"creationTimestamp":"2020-05-13T10:34:38Z","labels":{"app":"wordpress-mysql-with-persistent-template","template":"wordpress-mysql-with-persistent-template"},"annotations":{"description":"DeploymentConfig for Wordpress application"}},"spec":{"strategy":{"type":"Rolling","rollingParams":{"updatePeriodSeconds":1,"intervalSeconds":1,"timeoutSeconds":600,"maxUnavailable":"25%","maxSurge":"25%"},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ImageChange","imageChangeParams":{"automatic":true,"containerNames":["wordpress"],"from":{"kind":"ImageStreamTag","namespace":"mbilgidhis","name":"wordpress:latest"},"lastTriggeredImage":"docker-registry.default.svc:5000/mbilgidhis/wordpress@sha256:7638141119e3d40d155e72e4c1b7d8a5d8157bb89ad32f8117aa49b033c87cea"}}],"replicas":1,"test":false,"selector":{"name":"wordpress"},"template":{"metadata":{"name":"wordpress","creationTimestamp":null,"labels":{"name":"wordpress"}},"spec":{"volumes":[{"name":"wordpress-uploads-folder","persistentVolumeClaim":{"claimName":"wordpress-uploads-folder"}}],"containers":[{"name":"wordpress","image":"docker-registry.default.svc:5000/mbilgidhis/wordpress@sha256:7638141119e3d40d155e72e4c1b7d8a5d8157bb89ad32f8117aa49b033c87cea","ports":[{"containerPort":8080,"protocol":"TCP"}],"env":[{"name":"WORDPRESS_DB_HOST","value":"wordpress-mysql"},{"name":"WORDPRESS_DB_NAME","value":"wordpress"},{"name":"WORDPRESS_DB_USER","value":"wordpress"},{"name":"WORDPRESS_DB_PASSWORD","value":"a8O2Qc65FBfJN3iD"}],"resources":{},"volumeMounts":[{"name":"wordpress-uploads-folder","mountPath":"/opt/app-root/src/pv-uploads"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"IfNotPresent"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2020-05-13T10:34:38Z","lastTransitionTime":"2020-05-13T10:34:38Z","message":"Deployment config does not have minimum availability."}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      openshift.io/deployment-config.name: wordpress
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: wordpress
+      uid: 58b20562-9505-11ea-b05f-5254006b484b
+  spec:
+    replicas: 1
+    selector:
+      deployment: wordpress-1
+      deploymentconfig: wordpress
+      name: wordpress
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: wordpress
+          openshift.io/deployment.name: wordpress-1
+        creationTimestamp: null
+        labels:
+          deployment: wordpress-1
+          deploymentconfig: wordpress
+          name: wordpress
+      spec:
+        containers:
+        - env:
+          - name: WORDPRESS_DB_HOST
+            value: wordpress-mysql
+          - name: WORDPRESS_DB_NAME
+            value: wordpress
+          - name: WORDPRESS_DB_USER
+            value: wordpress
+          - name: WORDPRESS_DB_PASSWORD
+            value: a8O2Qc65FBfJN3iD
+          image: docker-registry.default.svc:5000/mbilgidhis/wordpress@sha256:7638141119e3d40d155e72e4c1b7d8a5d8157bb89ad32f8117aa49b033c87cea
+          imagePullPolicy: IfNotPresent
+          name: wordpress
+          ports:
+          - containerPort: 8080
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /opt/app-root/src/pv-uploads
+            name: wordpress-uploads-folder
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: wordpress-uploads-folder
+          persistentVolumeClaim:
+            claimName: wordpress-uploads-folder
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      kubectl.kubernetes.io/desired-replicas: "1"
+      openshift.io/deployer-pod.completed-at: 2020-05-13 06:44:43 -0400 EDT
+      openshift.io/deployer-pod.created-at: 2020-05-13 06:34:38 -0400 EDT
+      openshift.io/deployer-pod.name: wordpress-mysql-1-deploy
+      openshift.io/deployment-config.latest-version: "1"
+      openshift.io/deployment-config.name: wordpress-mysql
+      openshift.io/deployment.phase: Failed
+      openshift.io/deployment.replicas: "0"
+      openshift.io/deployment.status-reason: config change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"wordpress-mysql","namespace":"mbilgidhis","selfLink":"/apis/apps.openshift.io/v1/namespaces/mbilgidhis/deploymentconfigs/wordpress-mysql","uid":"58b25355-9505-11ea-b05f-5254006b484b","resourceVersion":"1862942","generation":1,"creationTimestamp":"2020-05-13T10:34:38Z","labels":{"app":"wordpress-mysql-with-persistent-template","template":"wordpress-mysql-with-persistent-template"},"annotations":{"description":"Deployment config for MySQL"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"name":"wordpress-mysql"},"template":{"metadata":{"name":"wordpress-mysql","creationTimestamp":null,"labels":{"name":"wordpress-mysql"}},"spec":{"volumes":[{"name":"wordpress-mysql-data","persistentVolumeClaim":{"claimName":"wordpress-mysql"}}],"containers":[{"name":"mysql","image":"rhscl/mysql-56-rhel7","ports":[{"containerPort":3306,"protocol":"TCP"}],"env":[{"name":"MYSQL_USER","value":"wordpress"},{"name":"MYSQL_PASSWORD","value":"a8O2Qc65FBfJN3iD"},{"name":"MYSQL_DATABASE","value":"wordpress"}],"resources":{},"volumeMounts":[{"name":"wordpress-mysql-data","mountPath":"/var/lib/mysql/data"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":1,"observedGeneration":0,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"config change","causes":[{"type":"ConfigChange"}]}}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      openshift.io/deployment-config.name: wordpress-mysql
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress-mysql-1
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: wordpress-mysql
+      uid: 58b25355-9505-11ea-b05f-5254006b484b
+  spec:
+    replicas: 0
+    selector:
+      deployment: wordpress-mysql-1
+      deploymentconfig: wordpress-mysql
+      name: wordpress-mysql
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "1"
+          openshift.io/deployment-config.name: wordpress-mysql
+          openshift.io/deployment.name: wordpress-mysql-1
+        creationTimestamp: null
+        labels:
+          deployment: wordpress-mysql-1
+          deploymentconfig: wordpress-mysql
+          name: wordpress-mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            value: wordpress
+          - name: MYSQL_PASSWORD
+            value: a8O2Qc65FBfJN3iD
+          - name: MYSQL_DATABASE
+            value: wordpress
+          image: rhscl/mysql-56-rhel7
+          imagePullPolicy: Always
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql/data
+            name: wordpress-mysql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: wordpress-mysql-data
+          persistentVolumeClaim:
+            claimName: wordpress-mysql
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: ReplicationController
+  metadata:
+    annotations:
+      openshift.io/deployer-pod.completed-at: 2020-05-13 06:45:37 -0400 EDT
+      openshift.io/deployer-pod.created-at: 2020-05-13 06:45:28 -0400 EDT
+      openshift.io/deployer-pod.name: wordpress-mysql-2-deploy
+      openshift.io/deployment-config.latest-version: "2"
+      openshift.io/deployment-config.name: wordpress-mysql
+      openshift.io/deployment.phase: Complete
+      openshift.io/deployment.replicas: "1"
+      openshift.io/deployment.status-reason: manual change
+      openshift.io/encoded-deployment-config: |
+        {"kind":"DeploymentConfig","apiVersion":"v1","metadata":{"name":"wordpress-mysql","namespace":"mbilgidhis","selfLink":"/apis/apps.openshift.io/v1/namespaces/mbilgidhis/deploymentconfigs/wordpress-mysql","uid":"58b25355-9505-11ea-b05f-5254006b484b","resourceVersion":"1864321","generation":2,"creationTimestamp":"2020-05-13T10:34:38Z","labels":{"app":"wordpress-mysql-with-persistent-template","template":"wordpress-mysql-with-persistent-template"},"annotations":{"description":"Deployment config for MySQL"}},"spec":{"strategy":{"type":"Recreate","recreateParams":{"timeoutSeconds":600},"resources":{},"activeDeadlineSeconds":21600},"triggers":[{"type":"ConfigChange"}],"replicas":1,"test":false,"selector":{"name":"wordpress-mysql"},"template":{"metadata":{"name":"wordpress-mysql","creationTimestamp":null,"labels":{"name":"wordpress-mysql"}},"spec":{"volumes":[{"name":"wordpress-mysql-data","persistentVolumeClaim":{"claimName":"wordpress-mysql"}}],"containers":[{"name":"mysql","image":"rhscl/mysql-56-rhel7","ports":[{"containerPort":3306,"protocol":"TCP"}],"env":[{"name":"MYSQL_USER","value":"wordpress"},{"name":"MYSQL_PASSWORD","value":"a8O2Qc65FBfJN3iD"},{"name":"MYSQL_DATABASE","value":"wordpress"}],"resources":{},"volumeMounts":[{"name":"wordpress-mysql-data","mountPath":"/var/lib/mysql/data"}],"terminationMessagePath":"/dev/termination-log","terminationMessagePolicy":"File","imagePullPolicy":"Always"}],"restartPolicy":"Always","terminationGracePeriodSeconds":30,"dnsPolicy":"ClusterFirst","securityContext":{},"schedulerName":"default-scheduler"}}},"status":{"latestVersion":2,"observedGeneration":1,"replicas":0,"updatedReplicas":0,"availableReplicas":0,"unavailableReplicas":0,"details":{"message":"manual change","causes":[{"type":"Manual"}]},"conditions":[{"type":"Available","status":"False","lastUpdateTime":"2020-05-13T10:34:38Z","lastTransitionTime":"2020-05-13T10:34:38Z","message":"Deployment config does not have minimum availability."},{"type":"Progressing","status":"False","lastUpdateTime":"2020-05-13T10:44:44Z","lastTransitionTime":"2020-05-13T10:44:44Z","reason":"ProgressDeadlineExceeded","message":"replication controller \"wordpress-mysql-1\" has failed progressing"}]}}
+    creationTimestamp: null
+    generation: 1
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      openshift.io/deployment-config.name: wordpress-mysql
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress-mysql-2
+    ownerReferences:
+    - apiVersion: apps.openshift.io/v1
+      blockOwnerDeletion: true
+      controller: true
+      kind: DeploymentConfig
+      name: wordpress-mysql
+      uid: 58b25355-9505-11ea-b05f-5254006b484b
+  spec:
+    replicas: 1
+    selector:
+      deployment: wordpress-mysql-2
+      deploymentconfig: wordpress-mysql
+      name: wordpress-mysql
+    template:
+      metadata:
+        annotations:
+          openshift.io/deployment-config.latest-version: "2"
+          openshift.io/deployment-config.name: wordpress-mysql
+          openshift.io/deployment.name: wordpress-mysql-2
+        creationTimestamp: null
+        labels:
+          deployment: wordpress-mysql-2
+          deploymentconfig: wordpress-mysql
+          name: wordpress-mysql
+      spec:
+        containers:
+        - env:
+          - name: MYSQL_USER
+            value: wordpress
+          - name: MYSQL_PASSWORD
+            value: a8O2Qc65FBfJN3iD
+          - name: MYSQL_DATABASE
+            value: wordpress
+          image: rhscl/mysql-56-rhel7
+          imagePullPolicy: Always
+          name: mysql
+          ports:
+          - containerPort: 3306
+            protocol: TCP
+          resources: {}
+          terminationMessagePath: /dev/termination-log
+          terminationMessagePolicy: File
+          volumeMounts:
+          - mountPath: /var/lib/mysql/data
+            name: wordpress-mysql-data
+        dnsPolicy: ClusterFirst
+        restartPolicy: Always
+        schedulerName: default-scheduler
+        securityContext: {}
+        terminationGracePeriodSeconds: 30
+        volumes:
+        - name: wordpress-mysql-data
+          persistentVolumeClaim:
+            claimName: wordpress-mysql
+  status:
+    replicas: 0
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+    creationTimestamp: null
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress-mysql
+  spec:
+    accessModes:
+    - ReadWriteOnce
+    resources:
+      requests:
+        storage: 1Gi
+    volumeName: persistent-volume-mysql
+  status: {}
+- apiVersion: v1
+  kind: PersistentVolumeClaim
+  metadata:
+    annotations:
+      pv.kubernetes.io/bind-completed: "yes"
+      pv.kubernetes.io/bound-by-controller: "yes"
+    creationTimestamp: null
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress-uploads-folder
+  spec:
+    accessModes:
+    - ReadWriteMany
+    resources:
+      requests:
+        storage: 1Gi
+    volumeName: persistent-volume-uploads-folder
+  status: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: Service for wordpress website
+      service.alpha.openshift.io/dependencies: '[{''name'': ''wordpress-mysql'', ''kind'':
+        ''Service''}]'
+    creationTimestamp: null
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress
+  spec:
+    ports:
+    - name: web
+      port: 8080
+      protocol: TCP
+      targetPort: 8080
+    selector:
+      name: wordpress
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Service
+  metadata:
+    annotations:
+      description: Service for MySQL
+    creationTimestamp: null
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress-mysql
+  spec:
+    ports:
+    - name: mysql
+      port: 3306
+      protocol: TCP
+      targetPort: 3306
+    selector:
+      name: wordpress-mysql
+    sessionAffinity: None
+    type: ClusterIP
+  status:
+    loadBalancer: {}
+- apiVersion: v1
+  kind: Route
+  metadata:
+    annotations:
+      openshift.io/host.generated: "true"
+    creationTimestamp: null
+    labels:
+      app: wordpress-mysql-with-persistent-template
+      template: wordpress-mysql-with-persistent-template
+    name: wordpress
+  spec:
+    host: wordpress-mbilgidhis.router.default.svc.cluster.local
+    to:
+      kind: Service
+      name: wordpress
+      weight: 100
+    wildcardPolicy: None
+  status:
+    ingress:
+    - conditions:
+      - lastTransitionTime: "2020-05-13T10:34:38Z"
+        status: "True"
+        type: Admitted
+      host: wordpress-mbilgidhis.router.default.svc.cluster.local
+      routerName: router
+      wildcardPolicy: None
