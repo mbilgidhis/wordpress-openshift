@@ -94,7 +94,7 @@ objects:
         type: Git
         git:
           uri: ${SOURCE_REPOSITORY_URL}
-          ref: ${SOURCE_REPOSITORY_REF}
+          ref: ${SOURCE_REPOSITORY_BRANCH}
         contextDir: ${CONTEXT_DIR}
       strategy:
         type: Source
@@ -199,7 +199,7 @@ objects:
     spec:
       accessModes:
         - ReadWriteOnce
-      resource:
+      resources:
         requests:
           storage: 1Gi
 
