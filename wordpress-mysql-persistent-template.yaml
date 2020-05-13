@@ -89,25 +89,25 @@ objects:
       name: ${APPLICATION_NAME}
       annotations:
         description: BuildConfig for Wordpress application image
-      spec:
-        source:
-          type: Git
-          git:
-            uri: ${SOURCE_REPOSITORY_URL}
-            ref: ${SOURCE_REPOSITORY_REF}
-          contextDir: ${CONTEXT_DIR}
-        strategy:
-          type: Source
-          sourceStrategy:
-            from:
-              kind: ImageStreamTag
-              namespace: openshift
-              name: php:5.6
-        output:
-          to:
+    spec:
+      source:
+        type: Git
+        git:
+          uri: ${SOURCE_REPOSITORY_URL}
+          ref: ${SOURCE_REPOSITORY_REF}
+        contextDir: ${CONTEXT_DIR}
+      strategy:
+        type: Source
+        sourceStrategy:
+          from:
             kind: ImageStreamTag
-            name: ${APPLICATION_NAME}:latest
-        triggers:
+            namespace: openshift
+            name: php:5.6
+      output:
+        to:
+          kind: ImageStreamTag
+          name: ${APPLICATION_NAME}:latest
+      triggers:
           - type: ImageChange
           - type: ConfigChange
           - type: GitHub
@@ -152,7 +152,7 @@ objects:
         metadata:
           name: ${APPLICATION_NAME}
           labels:
-            name: ${APPLICATION_NAME
+            name: ${APPLICATION_NAME}
         spec:
           containers:
             - name: ${APPLICATION_NAME}
@@ -197,7 +197,7 @@ objects:
     metadata: 
       name: ${APPLICATION_NAME}-mysql
     spec:
-      accessMode:
+      accessModes:
         - ReadWriteOnce
       resource:
         requests:
