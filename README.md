@@ -15,6 +15,19 @@ define( 'DB_PASSWORD', getenv('WORDPRESS_DB_PASSWORD') );
 /** MySQL hostname */
 define( 'DB_HOST', getenv('WORDPRESS_DB_HOST') );
 ```
+
+For salt key, you need to update wp-config.php with this value,
+```php
+define('AUTH_KEY',         getenv('WORDPRESS_AUTH_KEY'));
+define('SECURE_AUTH_KEY',  getenv('WORDPRESS_SECURE_AUTH_KEY'));
+define('LOGGED_IN_KEY',    getenv('WORDPRESS_LOGGED_ID_KEY'));
+define('NONCE_KEY',        getenv('WORDPRESS_NONCE_KEY'));
+define('AUTH_SALT',        getenv('WORDPRESS_AUTH_SALT'));
+define('SECURE_AUTH_SALT', getenv('WORDPRESS_SECURE_AUTH_SALT'));
+define('LOGGED_IN_SALT',   getenv('WORDPRESS_LOGGED_IN_SALT'));
+define('NONCE_SALT',       getenv('WORDPRESS_NONCE_SALT'));
+```
+
 So I use Persistent Volume on `uploads` folder only because this folder will be the only folder needs persistent storage. Create new constant value for Wordpress
 ```php
 define('UPLOADS', 'pv-uploads')
