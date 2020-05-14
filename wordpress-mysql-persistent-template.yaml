@@ -44,36 +44,36 @@ parameters:
     description: Database password
     generate: expression
     from: "[a-zA-Z0-9]{16}"
-  - name: AUTH_KEY
-    description: AUTH_KEY value
+  - name: WORDPRESS_AUTH_KEY
+    description: WORDPRESS_AUTH_KEY value
     generate: expression
     from: "[a-zA-Z0-9]{64}"
-  - name: SECURE_AUTH_KEY
-    description: SECURE_KEY value
+  - name: WORDPRESS_SECURE_AUTH_KEY
+    description: WORDPRESS_SECURE_KEY value
     generate: expression
     from: "[a-zA-Z0-9]{64}"
-  - name: LOGGED_IN_KEY
-    description: LOGGED_IN_KEY value
+  - name: WORDPRESS_LOGGED_IN_KEY
+    description: WORDPRESS_LOGGED_IN_KEY value
     generate: expression
     from: "[a-zA-Z0-9]{64}"
-  - name: NONCE_KEY
-    description: NONCE_KEY value
+  - name: WORDPRESS_NONCE_KEY
+    description: WORDPRESS_NONCE_KEY value
     generate: expression
     from: "[a-zA-Z0-9]{64}"
-  - name: AUTH_SALT
-    description: AUTH_SALT value
+  - name: WORDPRESS_AUTH_SALT
+    description: WORDPRESS_AUTH_SALT value
     generate: expression
     from: "[a-zA-Z0-9]{64}"
-  - name: SECURE_AUTH_SALT
-    description: SECURE_AUTH_SALT value
+  - name: WORDPRESS_SECURE_AUTH_SALT
+    description: WORDPRESS_SECURE_AUTH_SALT value
     generate: expression
     from: "[a-zA-Z0-9]{64}"
-  - name: LOGGED_IN_SALT
-    description: LOGGED_ID_SALT value
+  - name: WORDPRESS_LOGGED_IN_SALT
+    description: WORDPRESS_LOGGED_ID_SALT value
     generate: expression
     from: "[a-zA-Z0-9]{64}"
-  - name: NONCE_SALT
-    description: NONCE_SALT value
+  - name: WORDPRESS_NONCE_SALT
+    description: WORDPRESS_NONCE_SALT value
     generate: expression
     from: "[a-zA-Z0-9]{64}"
 
@@ -199,22 +199,22 @@ objects:
                   value: ${DATABASE_USER}
                 - name: WORDPRESS_DB_PASSWORD
                   value: ${DATABASE_PASSWORD}
-                - name: AUTH_KEY
-                  value: ${AUTH_KEY}
-                - name: SECURE_AUTH_KEY
-                  value: ${SECURE_AUTH_KEY}
-                - name: LOGGED_IN_KEY
-                  value: ${LOGGED_IN_KEY}
-                - name: NONCE_KEY
-                  value: ${NONCE_KEY}
-                - name: AUTH_SALT
-                  value: ${AUTH_SALT}
-                - name: SECURE_AUTH_SALT
-                  value: ${SECURE_AUTH_SALT}
-                - name: LOGGED_IN_SALT
-                  value: ${LOGGED_IN_SALT}
-                - name: NONCE_SALT
-                  value: ${NONCE_SALT}
+                - name: WORDPRESS_AUTH_KEY
+                  value: ${WORDPRESS_AUTH_KEY}
+                - name: WORDPRESS_SECURE_AUTH_KEY
+                  value: ${WORDPRESS_SECURE_AUTH_KEY}
+                - name: WORDPRESS_LOGGED_IN_KEY
+                  value: ${WORDPRESS_LOGGED_IN_KEY}
+                - name: WORDPRESS_NONCE_KEY
+                  value: ${WORDPRESS_NONCE_KEY}
+                - name: WORDPRESS_AUTH_SALT
+                  value: ${WORDPRESS_AUTH_SALT}
+                - name: WORDPRESS_SECURE_AUTH_SALT
+                  value: ${WORDPRESS_SECURE_AUTH_SALT}
+                - name: WORDPRESS_LOGGED_IN_SALT
+                  value: ${WORDPRESS_LOGGED_IN_SALT}
+                - name: WORDPRESS_NONCE_SALT
+                  value: ${WORDPRESS_NONCE_SALT}
               volumeMounts:
                 - name: ${APPLICATION_NAME}-uploads-folder
                   mountPath: /opt/app-root/src/pv-uploads

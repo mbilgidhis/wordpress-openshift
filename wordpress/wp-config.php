@@ -48,14 +48,14 @@ define('UPLOADS', 'pv-uploads');
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         getenv('AUTH_KEY'));
-define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY'));
-define('LOGGED_IN_KEY',    getenv('LOGGED_ID_KEY'));
-define('NONCE_KEY',        getenv('NONCE_KEY'));
-define('AUTH_SALT',        getenv('AUTH_SALT'));
-define('SECURE_AUTH_SALT', getenv('SECURE_AUTH_SALT'));
-define('LOGGED_IN_SALT',   getenv('LOGGED_IN_SALT'));
-define('NONCE_SALT',       getenv('NONCE_SALT'));
+define('AUTH_KEY',         getenv('WORDPRESS_AUTH_KEY'));
+define('SECURE_AUTH_KEY',  getenv('WORDPRESS_SECURE_AUTH_KEY'));
+define('LOGGED_IN_KEY',    getenv('WORDPRESS_LOGGED_ID_KEY'));
+define('NONCE_KEY',        getenv('WORDPRESS_NONCE_KEY'));
+define('AUTH_SALT',        getenv('WORDPRESS_AUTH_SALT'));
+define('SECURE_AUTH_SALT', getenv('WORDPRESS_SECURE_AUTH_SALT'));
+define('LOGGED_IN_SALT',   getenv('WORDPRESS_LOGGED_IN_SALT'));
+define('NONCE_SALT',       getenv('WORDPRESS_NONCE_SALT'));
 
 /**#@-*/
 
