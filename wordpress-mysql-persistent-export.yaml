@@ -72,21 +72,21 @@ objects:
             value: wordpress
           - name: WORDPRESS_DB_PASSWORD
             value: Fu1OXpITHMO1fJnF
-          - name: AUTH_KEY
+          - name: WORDPRESS_AUTH_KEY
             value: GiQFFBqdcEh38k8c5lEm5PCvuB0gGwIHj25PbVQLeX8Q3YXM2GLrxUT1M4PUJgUv
-          - name: SECURE_AUTH_KEY
+          - name: WORDPRESS_SECURE_AUTH_KEY
             value: lWaepG4QxcKt0wJcYIJ1BqnvKV8D4dLVXud7sEQlc0ONy2YsIFm1j5bXJBDQXsUN
-          - name: LOGGED_IN_KEY
+          - name: WORDPRESS_LOGGED_IN_KEY
             value: 56oRfGtFi8kLhHItHIgOKeqfHrCQqVLsa5aQY2DomTVpTkFPysJN0ApyXDeVipfo
-          - name: NONCE_KEY
+          - name: WORDPRESS_NONCE_KEY
             value: hFDDGhq6aL1L1gUBjM7tTPy7oELjjmUtUaC3ys5vekaKkUQtpapemMR11rN7rbYJ
-          - name: AUTH_SALT
+          - name: WORDPRESS_AUTH_SALT
             value: Dxs43cJ2Na6LWgxcwE4yf8SUeCiabchQCUqFmOwmi0DpnMbVIf8QkoUUNJ60WWVB
-          - name: SECURE_AUTH_SALT
+          - name: WORDPRESS_SECURE_AUTH_SALT
             value: xEOXQnQF7N68d0RdSpgWybx32YnE2wrHtjQbFx25oWaDkKK2Jc5ynvN50O5SIi8M
-          - name: LOGGED_IN_SALT
+          - name: WORDPRESS_LOGGED_IN_SALT
             value: VWUTeB84f5y7a63it7byxak0SslDiEw2DtfG4Jom1fHtxgUq3hfgdFTulaeJGiWh
-          - name: NONCE_SALT
+          - name: WORDPRESS_NONCE_SALT
             value: rGeNOaniXy436LO1seIBBhJddwMF3NOTig3iYu3YjGHTSuQ7jyAELmdWbuPVntSO
           image: docker-registry.default.svc:5000/testing/wordpress@sha256:161590cbf406a3bcc9dd77b849625ad496a52a96077cf451e90ab4c948085adf
           imagePullPolicy: IfNotPresent
@@ -291,21 +291,21 @@ objects:
             value: wordpress
           - name: WORDPRESS_DB_PASSWORD
             value: Fu1OXpITHMO1fJnF
-          - name: AUTH_KEY
+          - name: WORDPRESS_AUTH_KEY
             value: GiQFFBqdcEh38k8c5lEm5PCvuB0gGwIHj25PbVQLeX8Q3YXM2GLrxUT1M4PUJgUv
-          - name: SECURE_AUTH_KEY
+          - name: WORDPRESS_SECURE_AUTH_KEY
             value: lWaepG4QxcKt0wJcYIJ1BqnvKV8D4dLVXud7sEQlc0ONy2YsIFm1j5bXJBDQXsUN
-          - name: LOGGED_IN_KEY
+          - name: WORDPRESS_LOGGED_IN_KEY
             value: 56oRfGtFi8kLhHItHIgOKeqfHrCQqVLsa5aQY2DomTVpTkFPysJN0ApyXDeVipfo
-          - name: NONCE_KEY
+          - name: WORDPRESS_NONCE_KEY
             value: hFDDGhq6aL1L1gUBjM7tTPy7oELjjmUtUaC3ys5vekaKkUQtpapemMR11rN7rbYJ
-          - name: AUTH_SALT
+          - name: WORDPRESS_AUTH_SALT
             value: Dxs43cJ2Na6LWgxcwE4yf8SUeCiabchQCUqFmOwmi0DpnMbVIf8QkoUUNJ60WWVB
-          - name: SECURE_AUTH_SALT
+          - name: WORDPRESS_SECURE_AUTH_SALT
             value: xEOXQnQF7N68d0RdSpgWybx32YnE2wrHtjQbFx25oWaDkKK2Jc5ynvN50O5SIi8M
-          - name: LOGGED_IN_SALT
+          - name: WORDPRESS_LOGGED_IN_SALT
             value: VWUTeB84f5y7a63it7byxak0SslDiEw2DtfG4Jom1fHtxgUq3hfgdFTulaeJGiWh
-          - name: NONCE_SALT
+          - name: WORDPRESS_NONCE_SALT
             value: rGeNOaniXy436LO1seIBBhJddwMF3NOTig3iYu3YjGHTSuQ7jyAELmdWbuPVntSO
           image: docker-registry.default.svc:5000/testing/wordpress@sha256:161590cbf406a3bcc9dd77b849625ad496a52a96077cf451e90ab4c948085adf
           imagePullPolicy: IfNotPresent
