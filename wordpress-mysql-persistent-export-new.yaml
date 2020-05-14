@@ -2,7 +2,7 @@ apiVersion: v1
 kind: Template
 metadata:
   creationTimestamp: null
-  name: wordpress-mysql
+  name: wordpress-mysql-persistent
 objects:
 - apiVersion: v1
   kind: ImageStream
