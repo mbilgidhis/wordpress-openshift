@@ -51,31 +51,31 @@ parameters:
   - name: SECURE_AUTH_KEY
     description: SECURE_KEY value
     generate: expression
-    from: "[a-zA-Z0-9\\W]{64}"
+    from: "[a-zA-Z0-9_\\W]{64}"
   - name: LOGGED_IN_KEY
     description: LOGGED_IN_KEY value
     generate: expression
-    from: "[a-zA-Z0-9\\W]{64}"
+    from: "[a-zA-Z0-9_\\W]{64}"
   - name: NONCE_KEY
     description: NONCE_KEY value
     generate: expression
-    from: "[a-zA-Z0-9\\W]{64}"
+    from: "[a-zA-Z0-9_\\W]{64}"
   - name: AUTH_SALT
     description: AUTH_SALT value
     generate: expression
-    from: "[a-zA-Z0-9\\W]{64}"
+    from: "[a-zA-Z0-9_\\W]{64}"
   - name: SECURE_AUTH_SALT
     description: SECURE_AUTH_SALT value
     generate: expression
-    from: "[a-zA-Z0-9\\W]{64}"
+    from: "[a-zA-Z0-9_\\W]{64}"
   - name: LOGGED_IN_SALT
     description: LOGGED_ID_SALT value
     generate: expression
-    from: "[a-zA-Z0-9\\W]{64}"
+    from: "[a-zA-Z0-9_\\W]{64}"
   - name: NONCE_SALT
     description: NONCE_SALT value
     generate: expression
-    from: "[a-zA-Z0-9\\W]{64}"
+    from: "[a-zA-Z0-9_\\W]{64}"
 
 objects:
   ## Service Wordpress
