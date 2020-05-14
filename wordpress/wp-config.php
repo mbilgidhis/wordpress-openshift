@@ -48,14 +48,14 @@ define('UPLOADS', 'pv-uploads');
  *
  * @since 2.6.0
  */
-define('AUTH_KEY',         'ya/2J2^EuVA+=XR/{yJuyY?$_i#{V!ij6 GXT11/fa$DD)W1|}avMY&N6j>M{ttu');
-define('SECURE_AUTH_KEY',  'CpJ9Z[/0zoHl91iPn3:+ND2)xFw2*v9oiqO_rMI~Wj-qhm-r:R42b2.96ArGkxLA');
-define('LOGGED_IN_KEY',    'R9inH$~[|r?fuS9!d+~6bf|uFsAL5Q#1<SkL%@^&z<t1},JY??[Ay&1!{KlquU1S');
-define('NONCE_KEY',        'A=U~oF0sY3y4FhT3v@?lT{aLz%h+hV.T).5z6+Ifw[-ea+Rb0H+9Y1w^#xS@XihA');
-define('AUTH_SALT',        'q[;r0oHIKap+kl9XvsYFO={tGnkyhXr:Z/2plY:>P1eM}3c]b!&canOHRkTa3;Q$');
-define('SECURE_AUTH_SALT', '4?3@Al-DDAd>%vJk(U2i:)6)~3;i7h5N[Y~+qpGx(T-Nyr63}i794)mza<oP]p/d');
-define('LOGGED_IN_SALT',   's(N>+o5K?09&-;umTKHo^yX|^h&b<TA++X*,u48m+BC]?K4_M0MhB=|{G[+w>ZS<');
-define('NONCE_SALT',       '<UK+:;LS<~8myd#L)|h[`ZGo;(Hpk w75a@a| iQ6dDE1ZS3;7)`<xhY{mN/[#uh');
+define('AUTH_KEY',         getenv('AUTH_KEY'));
+define('SECURE_AUTH_KEY',  getenv('SECURE_AUTH_KEY'));
+define('LOGGED_IN_KEY',    getenv('LOGGED_ID_KEY'));
+define('NONCE_KEY',        getenv('NONCE_KEY'));
+define('AUTH_SALT',        getenv('AUTH_SALT'));
+define('SECURE_AUTH_SALT', getenv('SECURE_AUTH_SALT'));
+define('LOGGED_IN_SALT',   getenv('LOGGED_IN_SALT'));
+define('NONCE_SALT',       getenv('NONCE_SALT'));
 
 /**#@-*/
 
