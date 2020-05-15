@@ -289,6 +289,4 @@ objects:
           volumes:
             - name: ${APPLICATION_NAME}-mysql-data
               persistentVolumeClaim:
-                claimName: ${APPLICATION_NAME}-mysql
-
-    
+                claimName: ${APPLICATION_NAME}-mysql    
